@@ -1,5 +1,5 @@
 import { Env } from "../../env";
-import { Client, TextMessage, WebhookEvent } from "@line/bot-sdk";
+import { Client, MessageEvent, TextMessage } from "@line/bot-sdk";
 
 export interface MessageInterface {
   /**
@@ -8,7 +8,7 @@ export interface MessageInterface {
    * @param event
    * @param messageText
    */
-  reply(event: WebhookEvent, messageText: string): void
+  reply(event: MessageEvent, messageText: string): void
 
 }
 
@@ -17,21 +17,12 @@ export class Message extends Client implements MessageInterface {
     super(Env.clientConfig);
   }
 
-  async reply(event: WebhookEvent, messageText: string) {
-    try {
-      if(event.type !== 'message' || event.message.type !== 'text') {
-        return;
-      }
-      const replyToken = event.replyToken
-      const text: TextMessage = {
-        type: 'text',
-        text: messageText
-      }
-
-      await this.replyMessage(replyToken, text)
-
-    } catch (err) {
-      console.log(err);
+  async reply(event: MessageEvent, messageText: string) {
+    const replyToken = event.replyToken
+    const text: TextMessage = {
+      type: 'text',
+      text: messageText
     }
+    await this.replyMessage(replyToken, text)
   }
 }
