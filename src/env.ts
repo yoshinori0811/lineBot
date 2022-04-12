@@ -9,7 +9,6 @@ export class Env {
     channelAccessToken: process.env.CHANNEL_ACCESS_TOKEN || '',
     channelSecret: process.env.CHANNEL_SECRET || ''
   }
-
   static middlewareConfig: MiddlewareConfig = {
     channelAccessToken: process.env.CHANNEL_ACCESS_TOKEN || '',
     channelSecret: process.env.CHANNEL_SECRET || '',
