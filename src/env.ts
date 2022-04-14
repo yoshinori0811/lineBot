@@ -13,6 +13,12 @@ export class Env {
     channelAccessToken: process.env.CHANNEL_ACCESS_TOKEN || '',
     channelSecret: process.env.CHANNEL_SECRET || '',
   }
+
+  static yahooApi = {
+    apiToken: process.env.YAHOO_API_TOKEN || '',
+  }
 }
+
+
 
 export {}
