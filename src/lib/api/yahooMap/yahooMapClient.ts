@@ -1,5 +1,6 @@
 import fetch from "node-fetch";
 import { Env } from "../../../env";
+import { yahooApiResponse } from "./response/yahooMapType";
 
 export class YahooMapClient {
   private apitoken: string;
@@ -12,7 +13,7 @@ export class YahooMapClient {
     this.baseUrl = "https://map.yahooapis.jp";
   }
 
-  async getAddress(address: string) {
+  async getAddress(address: string): Promise<yahooApiResponse> {
     const geocoderUrl = "/geocode/cont/V1/contentsGeoCoder?output=json";
     const requestPath = this.baseUrl + geocoderUrl + this.apitoken + "&query=" + encodeURI(address);
     const res = await fetch(requestPath);
@@ -21,7 +22,7 @@ export class YahooMapClient {
       throw new Error(`${res.status} : ${res.statusText}`);
     }
 
-    return await res.json();
+    return (await res.json()) as yahooApiResponse;
   }
 
   async getWeatherInfo(coordinates: string) {

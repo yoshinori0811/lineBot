@@ -1,4 +1,4 @@
-export type openWeatherMap = {
+export type openWeatherMapApiResponse = {
   coord: coord;
   weather: weather[];
   base: string;

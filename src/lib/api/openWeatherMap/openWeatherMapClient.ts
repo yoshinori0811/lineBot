@@ -1,5 +1,6 @@
 import fetch from "node-fetch";
 import { Env } from "../../../env";
+import { openWeatherMapApiResponse } from "./response/openWeatherMapType";
 
 export class OpenWeatherMapClient {
   private appid: string;
@@ -12,7 +13,7 @@ export class OpenWeatherMapClient {
     this.baseUrl = "https://api.openweathermap.org/data/2.5/weather?units=metric";
   }
 
-  async getWeatherInfo(lon: string, lat: string) {
+  async getWeatherInfo(lon: string, lat: string): Promise<openWeatherMapApiResponse> {
     const coordinates = "&lon=" + lon + "&lat=" + lat;
     const requestPath = this.baseUrl + this.appid + coordinates;
 
@@ -22,6 +23,6 @@ export class OpenWeatherMapClient {
       throw new Error(`${res.status} : ${res.statusText}`);
     }
 
-    return await res.json();
+    return (await res.json()) as openWeatherMapApiResponse;
   }
 }
