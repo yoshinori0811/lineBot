@@ -5,6 +5,7 @@ import { Env } from "./env";
 const app = express();
 app.use("/send/repeat", middleware(Env.lineRepeatMessageBotMiddlewareConfig));
 app.use("/send/weather", middleware(Env.lineWeatherBotMiddlewareConfig));
+app.use("/send/itemsearch", middleware(Env.lineItemSearchBotMiddlewareConfig));
 app.use("/send", require("./functions/routers/v1/send/router.ts"));
 
 app.listen(Env.port, () => {
