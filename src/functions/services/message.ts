@@ -1,5 +1,6 @@
 import { Client, ClientConfig, MessageEvent, TextMessage } from "@line/bot-sdk";
-import { openWeatherMap } from "../../lib/api/openWeatherMap/response/openWeatherMapType";
+import { openWeatherMapApiResponse } from "../../lib/api/openWeatherMap/response/openWeatherMapType";
+import { rakutenSerachItemResponse } from "../../lib/api/rakutenDevelopers/response/rakutenDevelopersType";
 
 const WeatherType = {
   thunderstorm: "Thunderstorm",
@@ -28,7 +29,7 @@ export interface MessageInterface {
    * @param cityName
    * @param weatherInfo
    */
-  replyWeatherMessage(event: MessageEvent, cityName: string, weatherInfo: openWeatherMap): void;
+  replyWeatherMessage(event: MessageEvent, cityName: string, weatherInfo: openWeatherMapApiResponse): void;
 }
 
 export class Message extends Client implements MessageInterface {
@@ -45,7 +46,7 @@ export class Message extends Client implements MessageInterface {
     await this.replyMessage(replyToken, text);
   }
 
-  replyWeatherMessage(event: MessageEvent, cityName: string, weatherInfo: openWeatherMap) {
+  async replyWeatherMessage(event: MessageEvent, cityName: string, weatherInfo: openWeatherMapApiResponse) {
     const weatherType = this.returnWeatherType(weatherInfo.weather[0].main);
     const maxTemp = weatherInfo.main.temp_max + "℃";
     const minTemp = weatherInfo.main.temp_min + "℃";
@@ -56,7 +57,37 @@ export class Message extends Client implements MessageInterface {
       type: "text",
       text: messageText,
     };
-    this.replyMessage(event.replyToken, text);
+    await this.replyMessage(event.replyToken, text);
+  }
+
+  async replyItemInfoMessage(event: MessageEvent, rakutenItemInfo: rakutenSerachItemResponse) {
+    try {
+      if (!event.source.userId) {
+        throw new Error("userId is not found .");
+      }
+
+      const items = rakutenItemInfo.Items;
+      const userId = event.source.userId;
+
+      for (const [index, item] of items.entries()) {
+        const name = item.itemName;
+        const url = item.itemUrl;
+
+        const text: TextMessage = {
+          type: "text",
+          text: `【検索結果: ${index + 1}件目】\n${name}`,
+        };
+        const itemUrl: TextMessage = {
+          type: "text",
+          text: `${url}`,
+        };
+        await this.pushMessage(userId, text);
+        await this.pushMessage(userId, itemUrl);
+      }
+    } catch (err) {
+      console.log(err);
+      throw new Error(err as string);
+    }
   }
 
   private returnWeatherType(propertyType: string) {

@@ -3,15 +3,18 @@ import { Message } from "../../services/message";
 import { ClientConfig, WebhookEvent } from "@line/bot-sdk";
 import { YahooMapClient } from "../../../lib/api/yahooMap/yahooMapClient";
 import { OpenWeatherMapClient } from "../../../lib/api/openWeatherMap/openWeatherMapClient";
+import { RakutenDevelopersClient } from "../../../lib/api/rakutenDevelopers/rakutenDevelopersClient";
 
 export class MessageController {
   private message: Message;
   private yahooMapClient: YahooMapClient;
   private openWeatherMapClient: OpenWeatherMapClient;
+  private rakutenDevelopersClient: RakutenDevelopersClient;
   constructor(lineClientConfig: ClientConfig) {
     this.message = new Message(lineClientConfig);
     this.yahooMapClient = new YahooMapClient();
     this.openWeatherMapClient = new OpenWeatherMapClient();
+    this.rakutenDevelopersClient = new RakutenDevelopersClient();
   }
 
   replyRepeatMessage(req: express.Request, res: express.Response) {
@@ -64,6 +67,25 @@ export class MessageController {
 
       this.message.replyWeatherMessage(event, cityName, weatherInfo);
       res.status(200);
+    });
+  }
+
+  replyRakutenItemInfoByKeyword(req: express.Request, res: express.Response) {
+    const events: WebhookEvent[] = req.body.events;
+    events.map(async (event: WebhookEvent) => {
+      try {
+        if (event.type !== "message" || event.message.type !== "text") {
+          return;
+        }
+        const keyword = event.message.text;
+        const itemInfo = await this.rakutenDevelopersClient.getItemByKeyword(keyword);
+
+        this.message.replyItemInfoMessage(event, itemInfo);
+        res.status(200).send();
+      } catch (err: any) {
+        console.log(`Error : ${err}`);
+        return res.status(500).send(err.message as string);
+      }
     });
   }
 }

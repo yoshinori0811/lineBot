@@ -21,6 +21,15 @@ export class Env {
     channelSecret: process.env.LINE_WEATHERBOT_CHANNEL_SECRET || "",
   };
 
+  static lineItemSearchBotMiddlewareConfig: MiddlewareConfig = {
+    channelAccessToken: process.env.LINE_ITEMSEARCHBOT_CHANNEL_ACCESS_TOKEN || "",
+    channelSecret: process.env.LINE_ITEMSEARCHBOT_CHANNEL_SECRET || "",
+  };
+  static lineItemSearchBotClientConfig: ClientConfig = {
+    channelAccessToken: process.env.LINE_ITEMSEARCHBOT_CHANNEL_ACCESS_TOKEN || "",
+    channelSecret: process.env.LINE_ITEMSEARCHBOT_CHANNEL_SECRET || "",
+  };
+
   static yahooApi = {
     baseServiceUrl: "https://map.yahooapis.jp",
     apiToken: process.env.YAHOO_API_TOKEN || "",
@@ -34,6 +43,10 @@ export class Env {
 
   static openWeaterMapApi = {
     apiToken: process.env.OPENWEATHERMAP_API_TOKEN || "",
+  };
+
+  static rakutenDevelopersApi = {
+    appId: process.env.RAKUTENDEVELOPERS_APPID || "",
   };
 }
 

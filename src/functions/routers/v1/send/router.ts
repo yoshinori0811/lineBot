@@ -1,4 +1,4 @@
-import express from "express";
+import express, { Request, Response } from "express";
 import { MessageController } from "../../../controllers/message/messageController";
 import { Env } from "../../../../env";
 
@@ -12,6 +12,15 @@ router.post("/repeat", (req, res) => {
 router.post("/weather", (req, res) => {
   const message = new MessageController(Env.lineWeatherBotClientConfig);
   message.replyWeatherInfo(req, res);
+});
+
+router.post("/itemsearch", (req: Request, res, next) => {
+  try {
+    const message = new MessageController(Env.lineItemSearchBotClientConfig);
+    message.replyRakutenItemInfoByKeyword(req, res);
+  } catch (err) {
+    return next(err);
+  }
 });
 
 module.exports = router;
